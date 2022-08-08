@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from "react";
-import { getData, postData, signIn } from "../api/api-data";
+import { getData, postData } from "../api/api-data";
 import { Button } from "../components/button/Button";
 import { GroupCard } from "../components/card/GroupCard";
 import { ModalTask } from "../components/popup/ModalTask";
@@ -64,20 +64,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const payload = {
-      email: "wirapratama758@gmail.com",
-      password: "password",
-    };
-    signIn("/auth/login", payload)
-      .then((resp) => {
-        localStorage.setItem("token", resp.auth_token);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
     getGroupTask();
   }, [getGroupTask]);
 
@@ -102,7 +88,6 @@ const Home = () => {
             id={item.id}
             index={i}
             length={groupTask?.length}
-            list={groupTask}
             refreshList={getGroupTask}
           />
         ))}
