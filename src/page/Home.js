@@ -1,14 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { getData, postData, signIn } from "../api/api-data";
 import { Button } from "../components/button/Button";
 import { GroupCard } from "../components/card/GroupCard";
 import { ModalTask } from "../components/popup/ModalTask";
+import { GlobalState } from "../context/GlobalState";
 
 const Home = () => {
-  const [groupTask, setGroupTask] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [groupDesc, setGroupDesc] = useState("");
+  const {
+    isOpen,
+    setIsOpen,
+    groupTask,
+    setGroupTask,
+    groupName,
+    setGroupName,
+    groupDesc,
+    setGroupDesc,
+  } = useContext(GlobalState);
 
   const openModal = () => {
     setIsOpen(!isOpen);
