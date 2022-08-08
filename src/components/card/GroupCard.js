@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ItemCard } from "./ItemCard";
 import { changeColor, getPrevAndNext, isEmpty } from "../../common/helper";
 import { deleteData, editData, getData, postData } from "../../api/api-data";
 import { ModalTask } from "../popup/ModalTask";
 import { Button } from "../button/Button";
+import { GlobalState } from "../../context/GlobalState";
 
 export const GroupCard = ({
   taskName,
@@ -11,17 +12,22 @@ export const GroupCard = ({
   id,
   index,
   length,
-  list,
   refreshList,
 }) => {
+  const {
+    loadingSubmit,
+    setLoadingSubmit,
+    task,
+    setTask,
+    progress,
+    setProgress,
+    groupTask,
+  } = useContext(GlobalState);
   const [borderColor, setBorderColor] = useState("");
   const [bgColor, setBgColor] = useState("");
   const [textColor, setTextColor] = useState("");
   const [listItem, setListItem] = useState([]);
   const [isActiveModal, setIsActiveModal] = useState(false);
-  const [task, setTask] = useState("");
-  const [progress, setProgress] = useState("");
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [mode, setMode] = useState("");
   const [detail, setDetail] = useState({});
 
@@ -52,7 +58,7 @@ export const GroupCard = ({
         console.log(error);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, list]);
+  }, [id, groupTask]);
 
   const editTask = () => {
     const url = `/todos/${id}/items/${detail?.id}`;
@@ -74,7 +80,7 @@ export const GroupCard = ({
     (direction, task_id) => {
       const url = `/todos/${id}/items/${task_id}`;
       const payload = {
-        target_todo_id: getPrevAndNext(id, list, direction),
+        target_todo_id: getPrevAndNext(id, groupTask, direction),
       };
       editData(url, payload)
         .then((resp) => {
@@ -85,14 +91,14 @@ export const GroupCard = ({
           console.log(error);
         });
     },
-    [getListItem, id, list, refreshList]
+    [getListItem, id, groupTask, refreshList]
   );
 
   const draggingTask = useCallback(
     (todo_id, target_id, task_id) => {
       const url = `/todos/${todo_id}/items/${task_id}`;
       const payload = {
-        target_todo_id: list[target_id]?.id,
+        target_todo_id: groupTask[target_id]?.id,
       };
       editData(url, payload)
         .then((resp) => {
@@ -102,7 +108,7 @@ export const GroupCard = ({
           console.log(error);
         });
     },
-    [list, refreshList]
+    [groupTask, refreshList]
   );
 
   const createNewTask = () => {
@@ -164,17 +170,21 @@ export const GroupCard = ({
       setTask(detail.name);
       setProgress(detail?.progress_percentage);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail]);
 
   useEffect(() => {
     setBgColor(changeColor(id)?.bg);
     setBorderColor(changeColor(id)?.border);
     setTextColor(changeColor(id)?.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   return (
     <div className="p-4">
       <div
         className={`block py-4 px-4 w-full ${bgColor} rounded-lg border ${borderColor} shadow-md`}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => dropTask(e, index)}
       >
         <div className="font-bold tracking-tight mb-3">
           <span
