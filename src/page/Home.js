@@ -94,7 +94,7 @@ const Home = () => {
       </div>
 
       {/* Modal Add group task */}
-      <ModalTask isActive={isOpen} close={openModal} title={"Add Group"}>
+      <ModalTask isActive={isOpen} close={reset} title={"Add Group"}>
         <div className="flex flex-col px-6 pb-6 space-y-2">
           <div className="">
             <label htmlFor="task-name" className="text-[12px]">

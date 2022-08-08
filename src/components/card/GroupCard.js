@@ -234,7 +234,7 @@ export const GroupCard = ({
       </div>
 
       {/* Modal Task */}
-      <ModalTask isActive={isActiveModal} close={openModal} title={mode}>
+      <ModalTask isActive={isActiveModal} close={reset} title={mode}>
         {mode === "Create Task" ? (
           <div className="flex flex-col px-6 pb-6 space-y-2">
             <div className="">
