@@ -17,7 +17,7 @@ export const ItemCard = ({
 
   return (
     <div
-      className="block max-w-sm bg-neutral rounded-lg border border-neutral p-3"
+      className="block max-w-sm bg-neutral rounded-lg border border-neutral p-3 cursor-pointer"
       onDragStart={(e) => {
         dragTask(e, item);
       }}
